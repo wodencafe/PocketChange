@@ -2,6 +2,7 @@
 package cafe.woden.change;
 
 import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,50 +27,60 @@ public class Util
 {
 	public static BigInteger getRandomNumber()
 	{
-		SystemInfo si = new SystemInfo();
-		HardwareAbstractionLayer hal = si.getHardware();
-		//CentralProcessor cpu = hal.getProcessor();
-		String procId = hal.getProcessor()
-			.getProcessorIdentifier()
-			.toString();
-		final StringBuffer randomNumber = new StringBuffer();
-		procId.chars()
-			.forEach( c -> randomNumber.append( (int) c ) );
-		randomNumber.reverse();
-		int loadAverage = (int) si.getHardware()
-			.getProcessor()
-			.getSystemLoadAverage( 1 )[0];
-		if ( loadAverage > -1 )
+		try
 		{
-			randomNumber.append( String.valueOf( loadAverage ) );
+			SystemInfo si = new SystemInfo();
+			HardwareAbstractionLayer hal = si.getHardware();
+			//CentralProcessor cpu = hal.getProcessor();
+			String procId = hal.getProcessor()
+				.getProcessorIdentifier()
+				.toString();
+			final StringBuffer randomNumber = new StringBuffer();
+			procId.chars()
+				.forEach( c -> randomNumber.append( (int) c ) );
+			randomNumber.reverse();
+			int loadAverage = (int) si.getHardware()
+				.getProcessor()
+				.getSystemLoadAverage( 1 )[0];
+			if ( loadAverage > -1 )
+			{
+				randomNumber.append( String.valueOf( loadAverage ) );
+			}
+			for ( Temperature temp : getCpus() )
+			{
+				int tempValue = temp.value.intValue();
+				randomNumber.append( String.valueOf( tempValue ) );
+			}
+			List<Integer> time = new ArrayList<>();
+			String.valueOf( System.currentTimeMillis() )
+				.chars()
+				.forEach( time::add );
+			randomNumber.append( String.valueOf( (hal.getMemory()
+				.getTotal()
+				% hal.getMemory()
+					.getAvailable()) ) );
+			Collections.shuffle( time );
+			randomNumber.append( String.valueOf( System.currentTimeMillis() ) );
+			List<Integer> numbers = new ArrayList<>();
+			randomNumber.chars()
+				.forEach( numbers::add );
+			numbers.add( SecureRandom.getInstanceStrong()
+				.nextInt() );
+			Collections.reverse( numbers );
+			Collections.shuffle( numbers );
+
+			StringBuffer randomNumberFinal = new StringBuffer();
+			for ( Integer integer : numbers )
+			{
+				randomNumberFinal.append( String.valueOf( integer ) );
+			}
+			BigInteger bigInteger = new BigInteger( randomNumberFinal.toString() );
+			return bigInteger;
 		}
-		for ( Temperature temp : getCpus() )
+		catch ( Throwable th )
 		{
-			int tempValue = temp.value.intValue();
-			randomNumber.append( String.valueOf( tempValue ) );
+			throw new RuntimeException( th );
 		}
-		List<Integer> time = new ArrayList<>();
-		String.valueOf( System.currentTimeMillis() )
-			.chars()
-			.forEach( time::add );
-		randomNumber.append( String.valueOf( (hal.getMemory()
-			.getTotal()
-			% hal.getMemory()
-				.getAvailable()) ) );
-		Collections.shuffle( time );
-		randomNumber.append( String.valueOf( System.currentTimeMillis() ) );
-		List<Integer> numbers = new ArrayList<>();
-		randomNumber.chars()
-			.forEach( numbers::add );
-		Collections.reverse( numbers );
-		Collections.shuffle( numbers );
-		StringBuffer randomNumberFinal = new StringBuffer();
-		for ( Integer integer : numbers )
-		{
-			randomNumberFinal.append( String.valueOf( integer ) );
-		}
-		BigInteger bigInteger = new BigInteger( randomNumberFinal.toString() );
-		return bigInteger;
 	}
 
 	public static Set<Temperature> getCpus()
