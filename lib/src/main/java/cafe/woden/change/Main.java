@@ -39,7 +39,7 @@ public class Main
 	{
 		getOutput();
 		//System.out.println( "Coin: " + coin.toString() + " Count: " + coins.size() + " Value: " + totalValue );
-		//writeOutput( Paths.get( "/home/cboyd/200times.txt" ), 1000 );
+		//writeOutput( Paths.get( System.getProperty("user.home"), "pocketchangeruntimes.txt" ), 1000 );
 	}
 
 	private static void writeOutput( Path path, int number )
