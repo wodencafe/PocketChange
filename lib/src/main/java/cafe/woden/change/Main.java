@@ -82,9 +82,9 @@ public class Main
 
 	public static void main( String[] args )
 	{
-		//getOutput();
+		getOutput();
 		//System.out.println( "Coin: " + coin.toString() + " Count: " + coins.size() + " Value: " + totalValue );
-		writeOutput( Paths.get( System.getProperty( "user.home" ), "pocketchangeruntimes.txt" ), 1000000 );
+		//writeOutput( Paths.get( System.getProperty( "user.home" ), "pocketchangeruntimes.txt" ), 1000000 );
 	}
 
 	private static void writeOutput( Path path, int number )
@@ -160,7 +160,7 @@ public class Main
 			int totalValue = coins.stream()
 				.map( Coin::getValue )
 				.reduce( 0, Integer::sum );
-			//System.out.println( "Coin: " + coin.toString() + " Count: " + coins.size() + " Value: " + totalValue );
+			System.out.println( "Coin: " + coin.toString() + " Count: " + coins.size() + " Value: " + totalValue );
 			totalCoinValue += totalValue;
 
 		}
@@ -175,7 +175,7 @@ public class Main
 		}
 		NumberFormat formatter = NumberFormat.getCurrencyInstance();
 		String moneyString = formatter.format( totalCoinValueDouble );
-		//System.out.println( "Total value: " + moneyString );
+		System.out.println( "Total value: " + moneyString );
 		return totalCoinValue;
 
 	}
