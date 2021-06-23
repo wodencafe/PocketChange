@@ -58,7 +58,7 @@ public enum Coin
 			Set<Coin> coinsToRemove = new HashSet<>();
 			for ( Coin coin : coins )
 			{
-				if ( coin.value + total >= (total - currentTotal) )
+				if ( coin.value + total >= (currentTotal) )
 				{
 					coinsToRemove.add( coin );
 				}
