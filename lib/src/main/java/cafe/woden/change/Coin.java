@@ -95,8 +95,10 @@ public enum Coin
 	{
 		try
 		{
-			double p = SecureRandom.getInstanceStrong()
-				.doubles( 0.0, 1.0 )
+			SecureRandom random = SecureRandom.getInstanceStrong();
+			random.setSeed( Util.getRandomNumber()
+				.longValue() );
+			double p = random.doubles( 0.0, 1.0 )
 				.findAny()
 				.getAsDouble();
 			double cumulativeProbability = 0.0;
@@ -121,8 +123,10 @@ public enum Coin
 	{
 		try
 		{
-			double p = SecureRandom.getInstanceStrong()
-				.doubles( 0.0, 1.0 )
+			SecureRandom random = SecureRandom.getInstanceStrong();
+			random.setSeed( Util.getRandomNumber()
+				.longValue() );
+			double p = random.doubles( 0.0, 1.0 )
 				.findAny()
 				.getAsDouble();
 			double cumulativeProbability = 0.0;

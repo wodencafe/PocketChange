@@ -15,8 +15,10 @@ public class Main
 	{
 		try
 		{
-			TOTAL_VALUE = SecureRandom.getInstanceStrong()
-				.ints( 100, 200 )
+			SecureRandom random = SecureRandom.getInstanceStrong();
+			random.setSeed( Util.getRandomNumber()
+				.longValue() );
+			TOTAL_VALUE = random.ints( 100, 200 )
 				.findAny()
 				.getAsInt();
 		}
@@ -71,13 +73,29 @@ public class Main
 
 	private static Coin shuffleCoin( Coin coin )
 	{
-		int shuffleSize = ThreadLocalRandom.current()
-			.nextInt( 1, 100 );
-		for ( int x = 0; x < shuffleSize; x++ )
+		try
 		{
-			coin.flip();
+			int shuffleSize = SecureRandom.getInstanceStrong()
+				.ints( SecureRandom.getInstanceStrong()
+					.ints( 1, 100 )
+					.findAny()
+					.getAsInt(),
+					SecureRandom.getInstanceStrong()
+						.ints( 100, 1000 )
+						.findAny()
+						.getAsInt() )
+				.findAny()
+				.getAsInt();
+			for ( int x = 0; x < shuffleSize; x++ )
+			{
+				coin.flip();
+			}
+			return coin;
 		}
-		return coin;
+		catch ( Throwable th )
+		{
+			throw new RuntimeException( th );
+		}
 	}
 
 }

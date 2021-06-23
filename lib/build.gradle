@@ -17,6 +17,9 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.github.oshi:oshi-core:5.7.5'
+   	implementation 'com.profesorfalken:jSensors:2.2.1'
+
     // Use JUnit test framework.
     testImplementation 'junit:junit:4.13'
 
