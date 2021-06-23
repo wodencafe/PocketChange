@@ -16,6 +16,26 @@ public enum Coin
 {
 	DOLLAR_COIN( 100, 0.2 ), HALF_DOLLAR( 50, 0.2 ), QUARTER( 25, 0.4 ), DIME( 10, 0.5 ), NICKEL( 5, 0.5 ), PENNY( 1, 0.8 );
 
+	private static SecureRandom coinRandom;
+
+	private static SecureRandom getCoinRandom()
+	{
+		try
+		{
+			if ( coinRandom == null )
+			{
+				coinRandom = SecureRandom.getInstanceStrong();
+				coinRandom.setSeed( Util.getRandomNumber()
+					.longValue() );
+			}
+			return coinRandom;
+		}
+		catch ( Throwable th )
+		{
+			throw new RuntimeException( th );
+		}
+	}
+
 	private int value;
 
 	private double probability;
@@ -95,10 +115,7 @@ public enum Coin
 	{
 		try
 		{
-			SecureRandom random = SecureRandom.getInstanceStrong();
-			random.setSeed( Util.getRandomNumber()
-				.longValue() );
-			double p = random.doubles( 0.0, 1.0 )
+			double p = getCoinRandom().doubles( 0.0, 1.0 )
 				.findAny()
 				.getAsDouble();
 			double cumulativeProbability = 0.0;
@@ -123,10 +140,8 @@ public enum Coin
 	{
 		try
 		{
-			SecureRandom random = SecureRandom.getInstanceStrong();
-			random.setSeed( Util.getRandomNumber()
-				.longValue() );
-			double p = random.doubles( 0.0, 1.0 )
+
+			double p = getCoinRandom().doubles( 0.0, 1.0 )
 				.findAny()
 				.getAsDouble();
 			double cumulativeProbability = 0.0;

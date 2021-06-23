@@ -18,28 +18,73 @@ import java.util.stream.IntStream;
 
 public class Main
 {
-	private static int getTotalValue()
+	private static SecureRandom totalRandom;
+
+	private static SecureRandom shuffleRandom;
+
+	private static SecureRandom standardRandom;
+
+	private static SecureRandom getStandardRandom()
 	{
 		try
 		{
-			SecureRandom random = SecureRandom.getInstanceStrong();
-			random.setSeed( Util.getRandomNumber()
-				.longValue() );
-			return random.ints( 100, 200 )
-				.findAny()
-				.getAsInt();
+			if ( standardRandom == null )
+			{
+				standardRandom = SecureRandom.getInstanceStrong();
+			}
+			return standardRandom;
 		}
-		catch ( NoSuchAlgorithmException e )
+		catch ( Throwable th )
 		{
-			throw new RuntimeException( e );
+			throw new RuntimeException( th );
 		}
+
+	}
+
+	private static SecureRandom getShuffleRandom()
+	{
+		try
+		{
+			if ( shuffleRandom == null )
+			{
+				shuffleRandom = SecureRandom.getInstanceStrong();
+				shuffleRandom.setSeed( Util.getRandomNumber()
+					.longValue() );
+			}
+			return shuffleRandom;
+		}
+		catch ( Throwable th )
+		{
+			throw new RuntimeException( th );
+		}
+
+	}
+
+	private static int getTotalValue()
+	{
+		if ( totalRandom == null )
+		{
+			try
+			{
+				totalRandom = SecureRandom.getInstanceStrong();
+				totalRandom.setSeed( Util.getRandomNumber()
+					.longValue() );
+			}
+			catch ( NoSuchAlgorithmException e )
+			{
+				throw new RuntimeException( e );
+			}
+		}
+		return totalRandom.ints( 100, 200 )
+			.findAny()
+			.getAsInt();
 	}
 
 	public static void main( String[] args )
 	{
-		getOutput();
+		//getOutput();
 		//System.out.println( "Coin: " + coin.toString() + " Count: " + coins.size() + " Value: " + totalValue );
-		//writeOutput( Paths.get( System.getProperty("user.home"), "pocketchangeruntimes.txt" ), 1000 );
+		writeOutput( Paths.get( System.getProperty( "user.home" ), "pocketchangeruntimes.txt" ), 1000000 );
 	}
 
 	private static void writeOutput( Path path, int number )
@@ -115,7 +160,7 @@ public class Main
 			int totalValue = coins.stream()
 				.map( Coin::getValue )
 				.reduce( 0, Integer::sum );
-			System.out.println( "Coin: " + coin.toString() + " Count: " + coins.size() + " Value: " + totalValue );
+			//System.out.println( "Coin: " + coin.toString() + " Count: " + coins.size() + " Value: " + totalValue );
 			totalCoinValue += totalValue;
 
 		}
@@ -130,7 +175,7 @@ public class Main
 		}
 		NumberFormat formatter = NumberFormat.getCurrencyInstance();
 		String moneyString = formatter.format( totalCoinValueDouble );
-		System.out.println( "Total value: " + moneyString );
+		//System.out.println( "Total value: " + moneyString );
 		return totalCoinValue;
 
 	}
@@ -139,16 +184,11 @@ public class Main
 	{
 		try
 		{
-			SecureRandom random = SecureRandom.getInstanceStrong();
 
-			random.setSeed( Util.getRandomNumber()
-				.longValue() );
-			int shuffleSize = random.ints( SecureRandom.getInstanceStrong()
-				.ints( 1, 100 )
+			int shuffleSize = getShuffleRandom().ints( getStandardRandom().ints( 1, 100 )
 				.findAny()
 				.getAsInt(),
-				SecureRandom.getInstanceStrong()
-					.ints( 100, 1000 )
+				getStandardRandom().ints( 100, 1000 )
 					.findAny()
 					.getAsInt() )
 				.findAny()

@@ -26,18 +26,28 @@ import oshi.hardware.HardwareAbstractionLayer;
 public class Util
 {
 
+	private static SystemInfo si = new SystemInfo();
+
+	private static HardwareAbstractionLayer hal = si.getHardware();
+
+	private static String procId = hal.getProcessor()
+		.getProcessorIdentifier()
+		.toString();
+
+	private static Components components = JSensors.get.components();
+
+	private static Set<Temperature> allTemps = new HashSet<>();
+
+	private static List<Cpu> cpus = components.cpus;
+
 	public static BigInteger getRandomNumber()
 	{
 		BigInteger bigInteger = null;
 		final StringBuffer randomNumber;
 		try
 		{
-			SystemInfo si = new SystemInfo();
-			HardwareAbstractionLayer hal = si.getHardware();
 			//CentralProcessor cpu = hal.getProcessor();
-			String procId = hal.getProcessor()
-				.getProcessorIdentifier()
-				.toString();
+
 			randomNumber = new StringBuffer();
 			procId.chars()
 				.forEach( c -> randomNumber.append( (int) c ) );
@@ -89,10 +99,7 @@ public class Util
 
 	public static Set<Temperature> getCpus()
 	{
-		Components components = JSensors.get.components();
 
-		Set<Temperature> allTemps = new HashSet<>();
-		List<Cpu> cpus = components.cpus;
 		if ( cpus != null )
 		{
 			for ( final Cpu cpu : cpus )
