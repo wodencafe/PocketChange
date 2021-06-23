@@ -25,8 +25,11 @@ import oshi.hardware.HardwareAbstractionLayer;
 
 public class Util
 {
+
 	public static BigInteger getRandomNumber()
 	{
+		BigInteger bigInteger = null;
+		final StringBuffer randomNumber;
 		try
 		{
 			SystemInfo si = new SystemInfo();
@@ -35,7 +38,7 @@ public class Util
 			String procId = hal.getProcessor()
 				.getProcessorIdentifier()
 				.toString();
-			final StringBuffer randomNumber = new StringBuffer();
+			randomNumber = new StringBuffer();
 			procId.chars()
 				.forEach( c -> randomNumber.append( (int) c ) );
 			randomNumber.reverse();
@@ -64,8 +67,9 @@ public class Util
 			List<Integer> numbers = new ArrayList<>();
 			randomNumber.chars()
 				.forEach( numbers::add );
-			numbers.add( SecureRandom.getInstanceStrong()
-				.nextInt() );
+			numbers.add( Math.abs( SecureRandom.getInstanceStrong()
+				.nextInt() ) );
+
 			Collections.reverse( numbers );
 			Collections.shuffle( numbers );
 
@@ -74,7 +78,7 @@ public class Util
 			{
 				randomNumberFinal.append( String.valueOf( integer ) );
 			}
-			BigInteger bigInteger = new BigInteger( randomNumberFinal.toString() );
+			bigInteger = new BigInteger( randomNumberFinal.toString() );
 			return bigInteger;
 		}
 		catch ( Throwable th )
