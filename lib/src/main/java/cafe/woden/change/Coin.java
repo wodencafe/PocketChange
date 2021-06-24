@@ -119,15 +119,18 @@ public enum Coin
 				.findAny()
 				.getAsDouble();
 			double cumulativeProbability = 0.0;
-			for ( Coin coin : coins )
+			while ( !coins.isEmpty() && p > cumulativeProbability )
 			{
-				cumulativeProbability += coin.probability;
-				if ( p <= cumulativeProbability )
+				for ( Coin coin : coins )
 				{
-					return coin;
+					cumulativeProbability += coin.probability;
+					if ( p <= cumulativeProbability )
+					{
+						return coin;
+					}
 				}
 			}
-			return get();
+			return get( coins );
 
 		}
 		catch ( Throwable th )
