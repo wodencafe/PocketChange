@@ -78,7 +78,7 @@ public enum Coin
 			Set<Coin> coinsToRemove = new HashSet<>();
 			for ( Coin coin : coins )
 			{
-				if ( coin.value + total >= (currentTotal) )
+				if ( coin.value + currentTotal >= (total) )
 				{
 					coinsToRemove.add( coin );
 				}
@@ -89,16 +89,23 @@ public enum Coin
 				coins.remove( coin );
 			}
 			Coin coin = get( coins );
-			if ( coins.isEmpty() && coin.value + currentTotal > total )
+			if ( coin != null )
 			{
-				return returnedCoins;
+				if ( coins.isEmpty() && coin.value + currentTotal > total )
+				{
+					return returnedCoins;
+				}
+				currentTotal += coin.value;
+				if ( currentTotal > total )
+				{
+					throw new RuntimeException( "Whoops" );
+				}
+				returnedCoins.add( coin );
 			}
-			currentTotal += coin.value;
-			if ( currentTotal > total )
+			else
 			{
-				throw new RuntimeException( "Whoops" );
+				break;
 			}
-			returnedCoins.add( coin );
 		}
 		Collections.shuffle( returnedCoins );
 		return returnedCoins;
@@ -130,7 +137,7 @@ public enum Coin
 					}
 				}
 			}
-			return get( coins );
+			return null;
 
 		}
 		catch ( Throwable th )
